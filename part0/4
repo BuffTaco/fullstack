@@ -1,1 +1,12 @@
-
+sequenceDiagram
+    participant browser
+    participant server
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    server->>browser: URL Redirect
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    server->>browser: HTML Document
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    server->>browser: CSS File
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    server->>browser: JavaScript File
+    
