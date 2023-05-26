@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant browser
+    participant server
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    server->>browser: HTML Document
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    server->>browser: JavaScript Document
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    server->>browser: [{"content":"⡟⢠⣿⣱⣿⣿⣿⣏⣛⢲⣾⣿⠃⠄⠐⠈⣿⣿⣿⣿⣿⣿⠄⠁⠃⢸⣿⣿⡧","date":"2023-05-26T17:02:19.990Z"}, ...]
