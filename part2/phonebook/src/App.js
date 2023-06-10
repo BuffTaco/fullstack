@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import services from './services/notes'
 
+const Notification = ({message, type}) => {
+  if (message === null)
+  {return null}
+  return (
+    <div className={type}>
+      {message}
+    </div>
+  )
+}
 const Person = (props) => {
-  return (<div>{props.name} {props.number}</div>)
+  return (<div>{props.name} {props.number} <button onClick={() => {props.handleDelete(props.id, props.name)}}>Delete</button></div>)
 }
 const Form = ({handleSubmit, handleNameChange, handleNumberChange, newName, newNumber}) => {
   return (<>
@@ -26,13 +36,13 @@ const Search = ({newSearch, handleSearchChange}) => {
     <input value={newSearch} onChange={handleSearchChange}/>   
   )
 }
-
 const App = () => {
   const [persons, setPersons] = useState([]) 
+  const [message, setMessage] = useState(null)
+  const [type, setType] = useState("success")
   
-
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(response => setPersons(response.data))
+    services.getAll().then(response => setPersons(response))
   }
   )
   
@@ -47,6 +57,7 @@ const handleSubmit = (event) => {
       name: newName,
       number: newNumber
     }
+    const found = persons.find(person => person.name === newName)
     
     if (newName === '')
     {
@@ -56,21 +67,55 @@ const handleSubmit = (event) => {
     {
       alert('Enter a number')
     }
-    else if (persons.some(person => person.name === newName))
+    else if (found !== undefined)
     {
       
-      alert(`${newName} is already added to the phonebook`)
+      if (window.confirm(`${newName} is already in the phonebook. Replace the old number with a new one?`))
+      {
+        try{
+          services.change(found, newObj)
+          setType("success")
+          setMessage(`${newObj.name}'s phone number changed`)
+          setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+        }
+        catch
+        {
+          setType("error")
+          setMessage(`${newObj.name} was already removed from the server.`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        }
+        
+        
+      }
     }
     else
     {
+      services
+      .create(newObj)
+      .then(response => {
+        setPersons(persons.concat(response))
+      })
+      setMessage(`${newObj.name} added to the phonebook`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
       
-      setPersons(persons.concat(newObj))
     }
     
 
     
 
   }
+const handleDelete = (id, name) => {
+  if (window.confirm(`Remove ${name}?`))
+  {services.remove(id)}
+  
+
+}
 const handleNameChange = (event) => {
   setNewName(event.target.value)
 }
@@ -85,6 +130,7 @@ const handleSearchChange = (event) => {
     <div>
       
       <h1>Phonebook</h1>
+      <Notification message={message} type={type}/>
       <h2>Search name</h2>
       <Search newSearch={newSearch} handleSearchChange={handleSearchChange}/>
       
@@ -95,7 +141,7 @@ const handleSearchChange = (event) => {
       
       {        
         persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase()))
-        .map(person => <Person number={person.number} name={person.name} key={person.name}/>)        
+        .map(person => <Person id={person.id} number={person.number} name={person.name} key={person.name} handleDelete={handleDelete}/>)        
       }
       
     </div>
