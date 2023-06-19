@@ -43,7 +43,7 @@ const App = () => {
   
   useEffect(() => {
     services.getAll().then(response => setPersons(response))
-  }
+  }, []
   )
   
   const [newName, setNewName] = useState('')
