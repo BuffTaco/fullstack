@@ -74,6 +74,7 @@ const handleSubmit = (event) => {
       {
         try{
           services.change(found, newObj)
+          services.getAll().then(response => setPersons(response))
           setType("success")
           setMessage(`${newObj.name}'s phone number changed`)
           setTimeout(() => {
@@ -112,7 +113,14 @@ const handleSubmit = (event) => {
   }
 const handleDelete = (id, name) => {
   if (window.confirm(`Remove ${name}?`))
-  {services.remove(id)}
+  {
+    services.getAll().then(response=>{console.log(response)})
+    services.remove(id)
+    
+    services.getAll().then(response=>{console.log(response)})
+    services.getAll().then(response => setPersons(response))
+    
+  }
   
 
 }

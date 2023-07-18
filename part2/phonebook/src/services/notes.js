@@ -15,7 +15,8 @@ const remove = (id) => {
 const change = (person, newObj) => {
     const replacement = {name: newObj.name, number: newObj.number}
     console.log(replacement)
-    return axios.put(`${baseUrl}/${person.id}`, replacement)
+    
+    return axios.put(`${baseUrl}/${person.id}`, replacement).then(response=>response.data)
 }
 
 
