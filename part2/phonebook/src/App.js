@@ -72,23 +72,29 @@ const handleSubmit = (event) => {
       
       if (window.confirm(`${newName} is already in the phonebook. Replace the old number with a new one?`))
       {
-        try{
-          services.change(found, newObj)
+        
+        services.change(found, newObj)
+        .then(
           services.getAll().then(response => setPersons(response))
-          setType("success")
-          setMessage(`${newObj.name}'s phone number changed`)
-          setTimeout(() => {
-          setMessage(null)
-        }, 5000)
-        }
-        catch
-        {
+        )
+        .catch(error => {
           setType("error")
-          setMessage(`${newObj.name} was already removed from the server.`)
+          setMessage(error.response.data.error)
           setTimeout(() => {
             setMessage(null)
           }, 5000)
-        }
+          console.log(error.response.data.error)
+        })
+        
+        setType("success")
+        setMessage(`${newObj.name}'s phone number changed`)
+        setTimeout(() => {
+        setMessage(null)
+        }, 5000)
+      
+      
+        
+        
         
         
       }
@@ -108,10 +114,12 @@ const handleSubmit = (event) => {
         }, 5000)
         console.log(error.response.data.error)
       })
-      setMessage(`${newObj.name} added to the phonebook`)
+      setType("success")
+        setMessage(`${newObj.name} added to the phonebook`)
         setTimeout(() => {
         setMessage(null)
       }, 5000)
+      
       
     }
     
