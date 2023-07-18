@@ -100,8 +100,16 @@ const handleSubmit = (event) => {
       .then(response => {
         setPersons(persons.concat(response))
       })
+      .catch(error => {
+        setType("error")
+        setMessage(error.response.data.error)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+        console.log(error.response.data.error)
+      })
       setMessage(`${newObj.name} added to the phonebook`)
-      setTimeout(() => {
+        setTimeout(() => {
         setMessage(null)
       }, 5000)
       
