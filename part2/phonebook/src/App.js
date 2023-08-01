@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import services from './services/notes'
 
 const Notification = ({message, type}) => {
@@ -18,7 +17,7 @@ const Form = ({handleSubmit, handleNameChange, handleNumberChange, newName, newN
   return (<>
   <form onSubmit={handleSubmit}>
         <div>
-          name: <input value={newName} onChange={handleNameChange}/>
+          name: <input onChange={handleNameChange}/>
         </div>
         <div>
           number: <input value={newNumber} onChange={handleNumberChange}/>
@@ -159,7 +158,7 @@ const handleSearchChange = (event) => {
       <Search newSearch={newSearch} handleSearchChange={handleSearchChange}/>
       
       <h2>Add new number</h2>
-      <Form handleSubmit={handleSubmit} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} newName={newName}
+      <Form handleSubmit={handleSubmit} handleNameChange={(e) => handleNameChange(e)} handleNumberChange={handleNumberChange}
        newNumber={newNumber}/>
       <h2>Numbers</h2>
       
