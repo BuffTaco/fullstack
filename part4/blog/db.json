@@ -4,21 +4,21 @@
       "title": "asdf",
       "author": "asdf",
       "url": "dfs",
-      "likes": 0,
+      "likes": 2,
       "id": 1
     },
     {
       "title": "df",
       "author": "df",
       "url": "df",
-      "likes": 0,
+      "likes": 9,
       "id": 2
     },
     {
       "title": "How to eat a pancake",
       "author": "John Smith",
       "url": "pancake.com",
-      "likes": 0,
+      "likes": 8,
       "id": 3
     },
     {
@@ -27,6 +27,13 @@
       "url": "f",
       "likes": 0,
       "id": 4
+    },
+    {
+      "title": "New Website",
+      "author": "addnew",
+      "url": "new.com",
+      "likes": 2,
+      "id": 5
     }
   ]
 }
