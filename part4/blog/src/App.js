@@ -6,11 +6,11 @@ const Form = (props) => {
   return (
   <>
   <form onSubmit={props.handleSubmit}>
-    <div>
-      Author: <input onChange={props.handleAuthorChange}/>
+  <div>
+      Title: <input onChange={props.handleTitleChange}/>
     </div>
     <div>
-      Title: <input onChange={props.handleTitleChange}/>
+      Author: <input onChange={props.handleAuthorChange}/>
     </div>
     <div>
       URL: <input onChange={props.handleUrlChange}/>
@@ -51,7 +51,7 @@ const App = () => {
 
   useEffect(() => {
     services.getAll().then(response => setBlogs(response))
-  }, [])
+  }, [blogs])
   const handleAuthorChange = (event) => {
     
     setNewAuthor(event.target.value)
@@ -117,7 +117,7 @@ const App = () => {
       <Form  handleSubmit={(e) => handleSubmit(e)} handleAuthorChange={(e) => handleAuthorChange(e)} handleTitleChange={(e) => handleTitleChange(e)}
        handleUrlChange={(e) => handleUrlChange(e)}/>
        {
-        blogs.map(blog => <Blog handleLike={() => handleLike(blog)} likes={blog.likes} blog={blog} id={blog.id} key={blog.id} author={blog.author} title={blog.title} url={blog.url}/>
+        blogs.map(blog => <Blog handleLike={() => handleLike(blog)} likes={blog.likes} blog={blog} author={blog.author} title={blog.title} url={blog.url}/>
         
           
         )

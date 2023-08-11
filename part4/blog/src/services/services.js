@@ -16,6 +16,7 @@ const change = (blog, newObj) => {
         url: newObj.url,
         likes: newObj.likes
     }
+    
     return axios.put(`${baseUrl}/${blog.id}`, replacement).then(response=>response.data)
     
 }
