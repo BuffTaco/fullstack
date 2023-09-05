@@ -8,20 +8,6 @@
       "id": 1
     },
     {
-      "title": "df",
-      "author": "df",
-      "url": "df",
-      "likes": 9,
-      "id": 2
-    },
-    {
-      "title": "How to eat a pancake",
-      "author": "John Smith",
-      "url": "pancake.com",
-      "likes": 8,
-      "id": 3
-    },
-    {
       "title": "f",
       "author": "f",
       "url": "f",
@@ -34,6 +20,13 @@
       "url": "new.com",
       "likes": 2,
       "id": 5
+    },
+    {
+      "title": "fd",
+      "author": "sd",
+      "url": "tr",
+      "likes": 4,
+      "id": 6
     }
   ]
 }

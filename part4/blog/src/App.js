@@ -18,6 +18,7 @@ const Form = (props) => {
     <div>
       <button type="submit">Add blog</button>
     </div>
+    
   </form>
     
   </>
@@ -36,6 +37,9 @@ const Blog = (props) => {
     Likes: {props.likes}
     <br/>
     <button onClick={props.handleLike}>Like</button>
+    <br/>
+    <button onClick={props.handleDelete}>Delete</button>
+    <button>Edit</button>
     </p>
     
     
@@ -51,7 +55,7 @@ const App = () => {
 
   useEffect(() => {
     services.getAll().then(response => setBlogs(response))
-  }, [blogs])
+  }, [])
   const handleAuthorChange = (event) => {
     
     setNewAuthor(event.target.value)
@@ -63,7 +67,6 @@ const App = () => {
     setNewUrl(event.target.value)
   }
   const handleLike = (blog) => {
-  
   
     const newObj = {
       title: blog.title,
@@ -77,6 +80,17 @@ const App = () => {
         setBlogs(response)}))
     
   }
+  const handleDelete = (blog) => {
+    if (window.confirm('Remove blog?'))
+    {
+      services.remove(blog).then(
+        services.getAll().then(response => {
+          
+          setBlogs(response)}))
+    }
+    
+  }
+  
   const handleSubmit = (event) => {
     event.preventDefault()
     const newBlog = {
@@ -117,7 +131,7 @@ const App = () => {
       <Form  handleSubmit={(e) => handleSubmit(e)} handleAuthorChange={(e) => handleAuthorChange(e)} handleTitleChange={(e) => handleTitleChange(e)}
        handleUrlChange={(e) => handleUrlChange(e)}/>
        {
-        blogs.map(blog => <Blog handleLike={() => handleLike(blog)} likes={blog.likes} blog={blog} author={blog.author} title={blog.title} url={blog.url}/>
+        blogs.map(blog => <Blog handleDelete={() => handleDelete(blog)} handleLike={() => handleLike(blog)} likes={blog.likes} blog={blog} author={blog.author} title={blog.title} url={blog.url}/>
         
           
         )

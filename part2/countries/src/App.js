@@ -6,12 +6,14 @@ const App = () => {
   
   useEffect(() => {
     services.getAll().then(response => changeAll(response.data))
+    
 
   },[])
 
   const [all, changeAll] = useState([])
   const [newInput, changeNewInput] = useState("")
   const [shown, changeShown] = useState([])
+  const [weather, setWeather] = useState()
 
 
  
@@ -24,6 +26,17 @@ const App = () => {
   }
   const Country = ({country}) => {
     
+    const request = services.call(country)
+    request.then(response=>response.data.current_weather.temperature).then(response=>setWeather(response))
+  
+    
+    
+    
+    
+    
+    
+    
+    
     return (
       <>      
       <h1>{country.name.common}</h1>
@@ -35,6 +48,7 @@ const App = () => {
       </ul>
       <img src={country.flags.png} alt={`Flag of ${country.name.common}`}></img>
       <h3>Weather in {country.name.common}:</h3>
+      <p>Temperature: {weather} Celcius</p>
       
       </>
     )

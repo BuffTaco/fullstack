@@ -20,6 +20,9 @@ const change = (blog, newObj) => {
     return axios.put(`${baseUrl}/${blog.id}`, replacement).then(response=>response.data)
     
 }
+const remove = (blog) => {
+    return axios.delete(`${baseUrl}/${blog.id}`)
+}
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default {getAll, create, change}
+export default {getAll, create, change, remove}
