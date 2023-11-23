@@ -1,3 +1,6 @@
+.body{
+  text-align: center;
+}
 h1 
 {
   color: rgb(13, 13, 98);
@@ -6,19 +9,43 @@ button
 {
   margin-top: 5px;
 }
-div .blog
+.blog
 {
   border: 1px solid black;
-  margin-top: 10px;
   padding: 5px;
-  height: 150px;
-  min-width: 200px;
-  float: left;
+  margin-top: 5px;
+  min-height: 150px;
+  min-width: 200px; 
   overflow-wrap: normal;
   
+}
+.blog h3 {
+  margin: 0px;
+  padding: 0px;
 }
 .link
 {
   overflow-wrap: break-word;
+}
+.Error
+{
+    color: red;
+    background: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.Success
+{
+    color: green;
+    background: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    
 }
 

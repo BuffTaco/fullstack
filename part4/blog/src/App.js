@@ -1,145 +1,156 @@
 /* eslint-disable no-unused-vars */
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import services from './services/services'
+import loginHelper from './services/login'
+import Blog from './components/Blog'
+import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 
-const Form = (props) => {
-  return (
-  <>
-  <form onSubmit={props.handleSubmit}>
-  <div>
-      Title: <input onChange={props.handleTitleChange}/>
-    </div>
-    <div>
-      Author: <input onChange={props.handleAuthorChange}/>
-    </div>
-    <div>
-      URL: <input onChange={props.handleUrlChange}/>
-    </div>
-    <div>
-      <button type="submit">Add blog</button>
-    </div>
-    
-  </form>
-    
-  </>
-  )
-  
-}
-const Blog = (props) => {
-  
-  return <div className="blog">
-    <p>Title: {props.title}
-    <br/>
-    Author: {props.author}
-    <br/>
-    URL: <span className="link">{props.url}</span>
-    <br/>
-    Likes: {props.likes}
-    <br/>
-    <button onClick={props.handleLike}>Like</button>
-    <br/>
-    <button onClick={props.handleDelete}>Delete</button>
-    <button>Edit</button>
-    </p>
-    
-    
-  </div>
-}
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [user, setUser] = useState(null)
 
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  const [newMessage, setNewMessage] = useState('')
+  const [messageType, setMessageType] = useState('')
   
-
   useEffect(() => {
     services.getAll().then(response => setBlogs(response))
   }, [])
-  const handleAuthorChange = (event) => {
-    
-    setNewAuthor(event.target.value)
-  }
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
-  }
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value)
-  }
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
+    if (loggedUserJSON)
+    {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      services.setToken(user.token)
+    }
+  }, [])
+
   const handleLike = (blog) => {
-  
     const newObj = {
       title: blog.title,
       author: blog.author,
       url: blog.url,
       likes: blog.likes + 1
     }
-    services.change(blog, newObj).then(
+    services.change(blog, newObj).then(response => {
       services.getAll().then(response => {
         
-        setBlogs(response)}))
-    
+        setBlogs(response)})})
   }
+
   const handleDelete = (blog) => {
     if (window.confirm('Remove blog?'))
     {
-      services.remove(blog).then(
+      services.remove(blog).then(response => {
         services.getAll().then(response => {
+          console.log(response)
+          setBlogs(response)
+          setMessageType('Sucess')
+          setNewMessage('Blog successfully removed')
+          setTimeout(() => {
+            setNewMessage(null)
+          }, 5000)
           
-          setBlogs(response)}))
+        })})
+        .catch(error => {
+          console.log(error)
+        })
     }
-    
   }
   
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    const newBlog = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-      likes: 0
-    }
-
-    if (newTitle === '')
-    {
-      alert('Enter a title')
-    }
-    else if (newAuthor === '')
-    {
-      alert('Enter an author')
-    }
-    else if (newUrl === '')
-    {
-      alert('Enter an URL')
-    }
-    else
-    {
+  const handleSubmit = (newBlog) => {
       services.create(newBlog)
-      .then(response => {setBlogs(blogs.concat(response))})
-      .catch((error) => {console.log(error.message)})
-    }
-
-    
+      .then(
+        response => {setBlogs(blogs.concat(response))
+        
+        
+        setMessageType('Success')
+        setNewMessage('Blog successfully added')
+        setTimeout(() => {
+          setNewMessage(null)
+        }, 5000)
+ 
+      })
+      .catch((error) => {console.log(error.message)
+      setMessageType('Error')
+      setNewMessage('Unable to add blog')
+      setTimeout(() => {
+        setNewMessage(null)
+      }, 5000)
+      })
   }
 
+  const handleLogin = ( username, password ) => {
+    loginHelper.login( {username, password })
+    .then(response => {
+      setUser(response)
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(response))
 
+      services.setToken(response.token)
+    })
+    .catch(error => {
+      console.log(error)
+      console.log("Wrong credentials")
+      setMessageType('Error')
+      setNewMessage('Wrong credentials')
+      setTimeout(() => {
+        setNewMessage(null)
+      }, 5000)
+    })
+      
+  }
+  const handleLogout = (event) => {
+    window.localStorage.removeItem('loggedBlogUser')
+    window.location.reload()
+  }
+  const form = () => {
+    return (
+      
+    <>
+    <p>Logged in as {user.username} <button onClick={handleLogout}>Logout</button></p>
+    <Togglable buttonLabel="Add blog" closeLabel="Cancel">
+      <BlogForm createBlog={handleSubmit}/>
+    </Togglable>
+    </>
+    )
+    
+  }
   
+  const login = () => {
+    return <>
+    <Togglable buttonLabel="Login" closeLabel="Cancel">
+      <LoginForm login={handleLogin}/>
+    </Togglable>
+      
+    </>
+  }
 
   return (
-    <div>
+    <div className="body">
+      <Notification message={newMessage} type={messageType}/>
       <h1>Blogs</h1>
-      <Form  handleSubmit={(e) => handleSubmit(e)} handleAuthorChange={(e) => handleAuthorChange(e)} handleTitleChange={(e) => handleTitleChange(e)}
-       handleUrlChange={(e) => handleUrlChange(e)}/>
+      { user === null
+      ? login()
+      : form()
+      }
        {
-        blogs.map(blog => <Blog handleDelete={() => handleDelete(blog)} handleLike={() => handleLike(blog)} likes={blog.likes} blog={blog} author={blog.author} title={blog.title} url={blog.url}/>
-        
-          
+        blogs.map(blog => 
+          {
+            
+            return <div className="blog">
+            <h3>{blog.title}</h3>
+            <Togglable buttonLabel="View" closeLabel="Close">
+              <Blog key={blog.id} handleDelete={() => handleDelete(blog)} handleLike={() => handleLike(blog)} blog={blog} />
+            </Togglable>
+            
+            </div>
+          }          
         )
        }
-      
-      
-     
-
     </div>
   )
 }

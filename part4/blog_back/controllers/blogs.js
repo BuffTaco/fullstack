@@ -23,7 +23,6 @@ blogsRouter.get('/:id', async (request, response) => {
 blogsRouter.post('/', userExtractor, async (request, response) => {
     const blog = request.body
     
-    
     /*const decodedToken = jwt.verify(request.token, process.env.SECRET)
     if (!decodedToken.id){
       return response.json(401).json({ error: 'token invalid' })
@@ -42,15 +41,14 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
       response.status(400).end()
     }
     
-
-
     const toSave = new Blog({
       title: blog.title,
       author: blog.author,
       url: blog.url,
       likes: blog.likes,
-      user: request.user.id
+      user: await User.findById(request.user.id)
     })
+    
     const savedBlog = await toSave.save()
     request.user.blogs = request.user.blogs.concat(savedBlog._id)
     await request.user.save()
@@ -96,9 +94,6 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   {
     response.status(401).json({ error: 'incorrect user' })
   }
-  
-  
 })
-
 
 module.exports = blogsRouter
